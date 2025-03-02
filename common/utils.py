@@ -49,29 +49,52 @@ class Lanes:
 a blueprint that has lanes as lists and give queue like functionality 
 to reorder lanes based on their turn for green and red light state
 """
+# class Lane:
+#     def __init__(self,count,frame,lane_number):
+#         self.count = count
+#         self.frame = frame
+#         self.lane_number = lane_number
+
 class Lane:
-    def __init__(self,count,frame,lane_number):
-        self.count = count
-        self.frame = frame
+    def __init__(self, count, frame, lane_number):
+        self.count = count  # Number of vehicles in the lane
+        self.frame = frame  # Snapshot/frame where this count was detected
         self.lane_number = lane_number
+        self.skip_count = 0  # Track how many times this lane has been skipped
+
+
     
 """
 given lanes object return a duration based on comparison of each lane vehicle count
 """
 def schedule(lanes):
-   
-    standard=10 #standard duration
-    reward =0  #reward to be added or subtracted on the standard duration
-    turn = lanes.lanesTurn()
+    standard = 10  # Base time allocation
+    min_threshold = 5  # Skip lanes with <= 5 vehicles
+    max_skips = 2  # Allow a lane to be skipped at most 2 cycles
     
-    for i,lane in enumerate(lanes.getLanes()):
-        if(i==(len(lanes.getLanes())-1)):
-            reward = reward + (turn.count-lane.count)*0.2
+    turn = lanes.lanesTurn()  
+
+    
+    if turn.count <= min_threshold:
+        if turn.skip_count < max_skips:
+            turn.skip_count += 1
+            lanes.enque(turn)  
+            return schedule(lanes)
         else:
-            reward = reward + (turn.count-lane.count)*0.5
-    scheduled_time = round((standard+reward),0)
-    lanes.enque(turn)
+            turn.skip_count = 0  
+
+    total_cars = sum(lane.count for lane in lanes.getLanes() if lane.count > min_threshold) 
+    reward = 0  
+
+    for lane in lanes.getLanes():
+        if total_cars > 0:
+            lane_weight = lane.count / total_cars  
+            reward += (turn.count - lane.count) * lane_weight  
+    
+    scheduled_time = max(5, round(standard + reward, 0))  
+    lanes.enque(turn) 
     return scheduled_time
+
        
 """
 given duration and lanes, returns a grid image containing frames of each lane with
@@ -109,6 +132,48 @@ def display_result(wait_time,lanes):
     all_lanes_image = np.concatenate((hori_image, hori2_image), axis=0)
     
     return all_lanes_image
+
+# import cv2
+# import numpy as np
+
+# def display_result(wait_time, lanes):
+#     # Define signal colors
+#     COLORS = {
+#         "green": (0, 255, 0),
+#         "red": (0, 0, 255),
+#         "yellow": (0, 255, 255)
+#     }
+
+#     lane_images = []  # List to store lane images
+
+#     for i, lane in enumerate(lanes.getLanes()):
+#         lane.frame = cv2.resize(lane.frame, (1280, 720))  # Standardized frame size
+
+#         # Determine signal color and text
+#         if wait_time <= 0 and (i == 0 or i == len(lanes.getLanes()) - 1):
+#             color, text = COLORS["yellow"], "Yellow: 2 sec"
+#         elif wait_time > 0 and i == len(lanes.getLanes()) - 1:
+#             color, text = COLORS["green"], f"Green: {wait_time} sec"
+#         else:
+#             color, text = COLORS["red"], f"Red: {wait_time} sec"
+
+#         # Overlay lane number at the top
+#         cv2.putText(lane.frame, f"Lane {lane.lane_number}", (60, 60), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 255, 255), 6)
+
+#         # Overlay traffic light signal and vehicle count
+#         cv2.putText(lane.frame, text, (60, 150), cv2.FONT_HERSHEY_SIMPLEX, 4, color, 6)
+#         cv2.putText(lane.frame, f"Vehicle Count: {lane.count}", (60, 250), cv2.FONT_HERSHEY_SIMPLEX, 3, color, 5)
+
+#         lane_images.append(lane.frame)  # Store the modified lane frame
+
+#     # Arrange images dynamically into rows
+#     num_cols = 2  # Define number of columns per row
+#     row_images = [np.concatenate(lane_images[i:i + num_cols], axis=1) for i in range(0, len(lane_images), num_cols)]
+#     final_image = np.concatenate(row_images, axis=0) if len(row_images) > 1 else row_images[0]
+
+#     return final_image
+
+
 
 
 
@@ -218,23 +283,23 @@ given each lanes image, it inferences using trt engine on the image, return lane
 containg processed image and waiting duration for each image
 
 """
-def final_output_tensorrt(processor,lanes):
+# def final_output_tensorrt(processor,lanes):
      
-    for lane in lanes.getLanes():
-            lane.frame=cv2.resize(lane.frame,(1280,720))      #resize into a standard image  dimension
-            start = time.time()
-            output = processor.detect(lane.frame)
-            end = time.time() 
-            print("fps:"+str(end-start))   
-            dets = modify(output)
-            boxes,frame = postprocess(lane.frame,dets)
-            count = vehicle_count(boxes)
-            lane.count= count
-            lane.frame=frame
+#     for lane in lanes.getLanes():
+#             lane.frame=cv2.resize(lane.frame,(1280,720))      #resize into a standard image  dimension
+#             start = time.time()
+#             output = processor.detect(lane.frame)
+#             end = time.time() 
+#             print("fps:"+str(end-start))   
+#             dets = modify(output)
+#             boxes,frame = postprocess(lane.frame,dets)
+#             count = vehicle_count(boxes)
+#             lane.count= count
+#             lane.frame=frame
             
         
         
-    return lanes
+#     return lanes
 
 """
 given each lanes image, it inferences onnx model on the image, return lanes object
