@@ -4,10 +4,10 @@ import numpy as np
 
 
 # Load YOLO
-cfg_path = r"D:\AI-based-Traffic-Control-System--\\newer\\yolo\\yolov3.cfg"
-weights_path = r"D:\AI-based-Traffic-Control-System--\\newer\\yolo\\yolov3.weights"
-coco_names_path = r"D:\AI-based-Traffic-Control-System--\\newer\\coco.names"
-video_path = r"D:\AI-based-Traffic-Control-System--\datas\\video3.mp4"
+cfg_path = r"D:\\COding\AI ka project\\ubiquitous-octo-couscous\\newer\\yolo\\yolov3.cfg"
+weights_path = r"D:\\COding\AI ka project\\ubiquitous-octo-couscous\\newer\\yolo\\yolov3.weights"
+coco_names_path = r"D:\\COding\AI ka project\\ubiquitous-octo-couscous\\newer\\coco.names"
+video_path = r"D:\\COding\AI ka project\\ubiquitous-octo-couscous\datas\\video1.mp4"
 #Ensure required files exist
 if not all(os.path.exists(path) for path in [cfg_path, weights_path, coco_names_path, video_path]):
     raise FileNotFoundError("One or more required files are missing!")
