@@ -4,6 +4,8 @@ import pathlib
 import cv2
 import time
 import os
+import matplotlib.pyplot as plt
+
 sys.path.insert(1, str(pathlib.Path.cwd().parents[0]) + "/common")
 import utils as util
 import numpy as np
@@ -32,6 +34,10 @@ def main(sources):
     lanes = util.Lanes([util.Lane("", "", 1), util.Lane("", "", 3), util.Lane("", "", 4), util.Lane("", "", 2)])
     wait_time = 0
 
+    # Data storage for plotting (vehicle counts for each lane over time)
+    lane_vehicle_counts = {1: [], 2: [], 3: [], 4: []}
+    timestamps = []
+
     while True:
         # Read the next frame from the video sources
         (success, frame) = vs.read()
@@ -58,23 +64,47 @@ def main(sources):
         start = time.time()
         lanes = util.final_output(net, ln, lanes)  # Process frames through YOLOv3 model
         end = time.time()
-        # print("Total processing time:", str(end - start))
-        print(lane.count, lane.lane_number)
+        print("Total processing time:", str(end - start))
 
-        # if wait_time <= 0:
-        #     images_transition = util.display_result(wait_time, lanes)
-        #     final_image = cv2.resize(images_transition, (1020, 720))
-        #     cv2.imshow("f", final_image)
-        #     cv2.waitKey(100)
+        # Track the vehicle count for each lane
+        for lane in lanes.getLanes():
+            lane_vehicle_counts[lane.lane_number].append(lane.count)
 
-        #     wait_time = util.schedule(lanes)  # Get waiting time for each lane
+        timestamps.append(time.time())  # Record timestamp for this frame
+
+        if wait_time <= 0:
+            images_transition = util.display_result(wait_time, lanes)
+            final_image = cv2.resize(images_transition, (1020, 720))
+            cv2.waitKey(100)
+
+            wait_time = util.schedule(lanes)  # Get waiting time for each lane
 
         # Display scheduled images
         images_scheduled = util.display_result(wait_time, lanes)
         final_image = cv2.resize(images_scheduled, (1020, 720))
         cv2.imshow("Traffic Management", final_image)
         cv2.waitKey(1)
+        
+        # After the loop ends, plot the graph
+        # plot_vehicle_count_vs_time(lane_vehicle_counts, timestamps)
         wait_time -= 1  # Decrement wait time
+
+
+def plot_vehicle_count_vs_time(lane_vehicle_counts, timestamps):
+    # Convert timestamps to a more readable format
+    times = [time - timestamps[0] for time in timestamps]  # Relative time from the first frame
+
+    plt.figure(figsize=(10, 6))
+
+    for lane_number, counts in lane_vehicle_counts.items():
+        plt.plot(times, counts, label=f'Lane {lane_number}')
+
+    plt.xlabel('Time (seconds)')
+    plt.ylabel('Vehicle Count')
+    plt.title('Vehicle Count vs Time for Each Lane')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Determines duration based on car count in images")
