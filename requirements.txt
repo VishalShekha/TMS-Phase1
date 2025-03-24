@@ -1,9 +1,2 @@
-# python>=3.6
 numpy
 opencv-python
-tensorrt 
-pycuda 
-tqdm
-protobuf 
-onnx  
-netron
