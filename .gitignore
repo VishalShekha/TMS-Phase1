@@ -1,4 +1,6 @@
 .venv
-yolov3.weights
 .vscode
-video01.mp4
+
+__pycache__/
+
+yolov3.weights

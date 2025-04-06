@@ -8,7 +8,20 @@ This repository represents an ongoing open source research into utilizing differ
 
 Yolov5s is selected for this project due to its speed, lightness and accuracy. The yolov5s model can be found from https://github.com/ultralytics/yolov5
 
-While the models speed is great, it is not efficent enough to be deployed on edge devices for inference. To take advantage of performance the model is exported into Onnx version and then exported to Tensorrt model which optimizes the model for inference. The performance of the model before and after optimization is shown below. Tutorials on how to export Yolov5s model into tensorrt model can be found on the tutorial section at https://github.com/ultralytics/yolov5
+While the models speed is great, it is not efficent enough to be deployed on edge devices for inference. To take advantage of performance the model is exported into Onnx version and then exported to Tensorrt model which optimizes the model for inference.
+
+The performance of the model before and after optimization is shown below. Tutorials on how to export Yolov5s model into tensorrt model can be found on the tutorial section at https://github.com/ultralytics/yolov5
+
+This comparison is tested on an Nvidia Jetson Nano
+
+| Detection Algorithim | Platform |   FPS |
+| :------------------- | :------: | ----: |
+| Yolov5s              | Pytorch  | 3.125 |
+| Yolov5s              |   ONNX   |     4 |
+| Yolov5s              | Tensorrt |    13 |
+| Yolov4               | Darknet  |     - |
+| Yolov3               | Darknet  |     - |
+| Yolov3-tiny          | Darknet  |     - |
 
 ## Features
 
@@ -16,58 +29,49 @@ While the models speed is great, it is not efficent enough to be deployed on edg
 - Determine a green and red light duration based on comparison of each lanes vehicle density
 - Displays a simulation
 
-## Work flow
+## Devices Used
 
-<p float="left">
-  <img src="/screenshots/workflow.png" width="600" height=400 />
-
-</p>
+- Nvidia Jetson Nano
+- IP camera
 
 ## Project directory
 
-```
+```txt
 project
+|   .gitignore
 │   README.md
-│   requirement.txt
+│   requirements.txt
 │   main.py
-|__ yolov3
-│   │  coco.names
-|   |  yolov3.cfg
-|   |  yolov3.weigts
+|__ common
+│   │  utils.py
 |__ data
     |  video.mp4
     │  video1.mp4
     |  video2.mp4
     |  video3.mp4
     |  video4.mp4
-|__ algorithm
-    |  utils.py
+|__ yolo
+    |   coco.names
+    |   yolov3.cfg
+    |   yolov3.weights
 ```
 
 ## Getting started
 
 ```sh
-$ git clone https://github.com/Natnael-k/ubiquitous-octo-couscous.git
-$ cd ubiquitous-octo-couscous
-$ pip install requirement.txt
+git clone https://github.com/VishalShekha/ubiquitous-octo-couscous/
+cd ubiquitous-octo-couscous
+pip install requirements.txt
 ```
 
-## How to run
-
-For CPU and GPU environments...
-The Onnx implementation can run both on CPU and GPU
-
 ```sh
-$ cd implementation_with_yolov5s_onnx_model
-$ python3 main.py  --sources video1.mp4,video2.mp4,video3.mp4,video5.mp4
+python3 main.py
 ```
 
-Only for GPU environments...
-The Tensorrt based implementation runs only on GPU
+OR
 
 ```sh
-$ cd implementation_with_yolov5s_tensorrt_model
-$ python3 main.py --sources video1.mp4,video2.mp4,video3.mp4,video5.mp4
+python main.py
 ```
 
 ## References
@@ -76,3 +80,4 @@ $ python3 main.py --sources video1.mp4,video2.mp4,video3.mp4,video5.mp4
    https://github.com/ultralytics/yolov5
 2. How to export onnx model to tensorrt:
    https://github.com/SeanAvery/yolov5-tensorrt
+3. https://github.com/Natnael-k/AI-based-Traffic-Control-System--.git
