@@ -1,83 +1,38 @@
-# AI-based-Traffic-Light-Control-System
+### 🚦 Project Goals
 
-Computer vision aided traffic light scheduling systems
+* Apply computer vision to detect and count vehicles per lane.
+* Use adaptive scheduling for green/red traffic lights based on vehicle density.
+* Export models for edge deployment using **ONNX** and **TensorRT**.
 
-AI-based-Traffic-Light-Control-System is an inteligent embedded system which applies computer vision to determine the density of cars at each lane on a traffic intersection so as to generate adaptive duration for green and red traffic light at each lane.
+### 🛠 Technologies Used
 
-This repository represents an ongoing open source research into utilizing different object detection algorithims like YOLO to design an inteligent and adaptive traffic light control system. All the code and models are under research and development and subject to change.
+* YOLOv5s (for fast, lightweight object detection)
+* ONNX Runtime
 
-Yolov5s is selected for this project due to its speed, lightness and accuracy. The yolov5s model can be found from https://github.com/ultralytics/yolov5
+---
 
-While the models speed is great, it is not efficent enough to be deployed on edge devices for inference. To take advantage of performance the model is exported into Onnx version and then exported to Tensorrt model which optimizes the model for inference.
+## 🚀 My Contributions
 
-The performance of the model before and after optimization is shown below. Tutorials on how to export Yolov5s model into tensorrt model can be found on the tutorial section at https://github.com/ultralytics/yolov5
+I built upon the original open-source research by:
 
-This comparison is tested on an Nvidia Jetson Nano
+* 🔧 **Improving and optimizing the core algorithm** for better vehicle detection accuracy and adaptive timing logic.
+* ⚙️ **Focusing on CPU and GPU-based inference using ONNX Runtime**, enabling deployment on a wider range of hardware without relying on specialized accelerators like TensorRT.
+* 📦 **Streamlining the model export and deployment workflow**, especially for environments where GPU inference is possible but TensorRT is not practical.
+* 🧪 **Benchmarking performance** and ensuring efficient real-time operation on both CPU and GPU setups.
 
-| Detection Algorithim | Platform |   FPS |
-| :------------------- | :------: | ----: |
-| Yolov5s              | Pytorch  | 3.125 |
-| Yolov5s              |   ONNX   |     4 |
-| Yolov5s              | Tensorrt |    13 |
-| Yolov4               | Darknet  |     - |
-| Yolov3               | Darknet  |     - |
-| Yolov3-tiny          | Darknet  |     - |
+These contributions enhance accessibility, deployment flexibility, and encourage further open-source collaboration.
 
-## Features
+---
 
-- Detect and counts vehicles from a camera feed on each lane
-- Determine a green and red light duration based on comparison of each lanes vehicle density
-- Displays a simulation
+## 📚 Resources & Tutorials
 
-## Devices Used
+* YOLOv5: [https://github.com/ultralytics/yolov5](https://github.com/ultralytics/yolov5)
+* ONNX Export & Optimization: [Ultralytics Tutorial Section](https://github.com/ultralytics/yolov5)
 
-- Nvidia Jetson Nano
-- IP camera
+---
 
-## Project directory
+## 🤝 Acknowledgements
 
-```txt
-project
-|   .gitignore
-│   README.md
-│   requirements.txt
-│   main.py
-|__ common
-│   │  utils.py
-|__ data
-    |  video.mp4
-    │  video1.mp4
-    |  video2.mp4
-    |  video3.mp4
-    |  video4.mp4
-|__ yolo
-    |   coco.names
-    |   yolov3.cfg
-    |   yolov3.weights
-```
+Originally created by [Natnael-k](https://github.com/Natnael-k) as part of ongoing open-source research. Contributions made to enhance deployment flexibility and performance on standard hardware.
 
-## Getting started
-
-```sh
-git clone https://github.com/VishalShekha/ubiquitous-octo-couscous/
-cd ubiquitous-octo-couscous
-pip install requirements.txt
-```
-
-```sh
-python3 main.py
-```
-
-OR
-
-```sh
-python main.py
-```
-
-## References
-
-1. How to export yolov5s model to onnx:
-   https://github.com/ultralytics/yolov5
-2. How to export onnx model to tensorrt:
-   https://github.com/SeanAvery/yolov5-tensorrt
-3. https://github.com/Natnael-k/AI-based-Traffic-Control-System--.git
+---
