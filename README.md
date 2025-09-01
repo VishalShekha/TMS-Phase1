@@ -33,6 +33,6 @@ These contributions enhance accessibility, deployment flexibility, and encourage
 
 ## 🤝 Acknowledgements
 
-Originally created by [Natnael-k](https://github.com/Natnael-k) as part of ongoing open-source research. Contributions made to enhance deployment flexibility and performance on standard hardware.
+Originally created by [Natnael-k](https://github.com/Natnael-k) as part of ongoing project. Contributions made to enhance deployment flexibility and performance on standard hardware.
 
 ---
